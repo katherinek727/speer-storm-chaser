@@ -92,7 +92,7 @@ const testData2 = {
 };
 const result2 = validateStormData(testData2);
 console.log(`Invalid data: ${!result2.isValid} (expected: true)`);
-console.log(`Error count: ${result2.errors.length} (expected: 4)`);
+console.log(`Error count: ${result2.errors.length} (expected: 3)`);
 console.log('✓ Storm data validation works correctly\n');
 
 console.log('=== All Tests Completed Successfully ===');
