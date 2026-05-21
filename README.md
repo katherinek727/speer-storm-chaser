@@ -1,56 +1,152 @@
-# Welcome to your Expo app 👋
+# 🌪️ Storm Chaser App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A mobile application for storm chasing hobbyist meteorologists to track and document weather events.
 
-## Get started
+## Features
 
-1. Install dependencies
+### ✅ Required Features Implemented
 
+1. **Weather Data View**
+   - Fetch and display current weather data based on device location
+   - Display key meteorological information relevant to storm chasers
+   - Show "Not found" view if weather data cannot be retrieved
+   - Pull-to-refresh functionality
+
+2. **Storm Documentation Feature**
+   - Capture photos using device camera or gallery
+   - Add metadata including:
+     - Weather conditions
+     - Location coordinates (demo mode)
+     - Date and time
+     - Notes/description
+     - Storm type/classification
+
+3. **Data Persistence Capabilities**
+   - Save all captured storm data locally (mock implementation)
+   - Implement proper data models and storage solutions
+   - View saved storms with detailed information
+
+4. **Intuitive Navigation**
+   - Tab-based navigation between different sections
+   - Modern, clean UI with consistent theming
+
+### 🎯 Bonus Features (Senior Role Requirements)
+
+- **Pull to refresh** in weather and saved storms screens
+- **Modern UI/UX** with clean, distinctive design
+- **Error handling** with user-friendly messages
+- **Form validation** for storm documentation
+
+## Technology Stack
+
+- **React Native** with **Expo** for cross-platform development
+- **Expo Router** for file-based navigation
+- **TypeScript** for type safety
+- **Expo Image Picker** for camera integration
+- **Expo Location** for geolocation services
+
+## Project Structure
+
+```
+StormChaser/
+├── src/
+│   ├── app/                    # App screens (Expo Router)
+│   │   ├── index.tsx          # Home screen
+│   │   ├── weather.tsx        # Weather data screen
+│   │   ├── document.tsx       # Storm documentation screen
+│   │   └── saved.tsx          # Saved storms screen
+│   ├── components/            # Reusable components
+│   ├── constants/             # Constants and theme
+│   └── hooks/                 # Custom hooks
+├── assets/                    # Images and icons
+└── package.json              # Dependencies
+```
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v18 or higher)
+- npm or yarn
+- Expo CLI (optional)
+
+### Installation
+
+1. Clone the repository
+2. Install dependencies:
    ```bash
    npm install
    ```
-
-2. Start the app
-
+3. Start the development server:
    ```bash
-   npx expo start
+   npm start
    ```
 
-In the output, you'll find options to open the app in a
+### Running the App
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- **iOS Simulator**: Press `i` in the terminal
+- **Android Emulator**: Press `a` in the terminal
+- **Web**: Press `w` in the terminal
+- **Physical Device**: Scan QR code with Expo Go app
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Implementation Details
 
-## Get a fresh project
+### Weather Data
+- Uses mock data for demonstration
+- In production, would integrate with Open-Meteo API or Weather.gov API
+- Includes location permission handling
 
-When you're ready, run:
+### Camera Integration
+- Supports both camera capture and gallery selection
+- Includes proper permission handling
+- Image compression and editing options
 
-```bash
-npm run reset-project
+### Data Models
+```typescript
+interface StormDocument {
+  id: string;
+  imageUri: string | null;
+  weatherConditions: string;
+  location: string;
+  dateTime: string;
+  notes: string;
+  stormType: string;
+}
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Navigation
+- 4-tab navigation: Home, Weather, Document, Saved
+- Consistent theming across all screens
+- Smooth transitions and intuitive UX
 
-### Other setup steps
+## Design Philosophy
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+- **Modern & Clean**: Bright, distinctive aesthetic
+- **User-Friendly**: Intuitive controls and clear feedback
+- **Professional**: Clean code with proper architecture
+- **Accessible**: Considerate of different user needs
 
-## Learn more
+## Future Enhancements
 
-To learn more about developing your project with Expo, look at the following resources:
+1. **Real API Integration**
+   - Connect to Open-Meteo or Weather.gov APIs
+   - Add weather forecast integration
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+2. **Advanced Features**
+   - Map visualization of documented storm locations
+   - Offline functionality with sync
+   - Dark mode support
+   - Cloud integration (Firebase, AWS, etc.)
 
-## Join the community
+3. **Testing**
+   - Unit tests for components and utilities
+   - Integration tests for navigation
+   - End-to-end testing
 
-Join our community of developers creating universal apps.
+## License
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+This project is created for the Speer Technologies Mobile Development Assessment.
+
+## Author
+
+Built with ❤️ for meteorology enthusiasts.
