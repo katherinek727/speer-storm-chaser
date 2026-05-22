@@ -42,10 +42,9 @@ export default function WeatherScreen() {
             console.log('Location permission not granted, using demo data');
             // Continue with demo data
           } else {
-            // Get current location with timeout
+            // Get current location
             const location = await Location.getCurrentPositionAsync({
               accuracy: Location.Accuracy.Balanced,
-              timeout: 5000, // 5 second timeout
             });
             
             const { latitude, longitude } = location.coords;
