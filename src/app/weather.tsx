@@ -277,7 +277,6 @@ export default function WeatherScreen() {
       };
       setWeather(demoWeather);
       
-      // 오류 메시지 설정
       if (err.message && err.message.includes('network')) {
         setError('Network error. Check your internet connection.');
       } else if (err.message && err.message.includes('API')) {
