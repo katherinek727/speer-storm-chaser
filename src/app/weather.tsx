@@ -27,29 +27,35 @@ export default function WeatherScreen() {
       setLoading(true);
       setError(null);
 
-      // Check if location services are available
-      const isLocationEnabled = await Location.hasServicesEnabledAsync();
-      if (!isLocationEnabled) {
-        setError('Location services are disabled. Please enable location services in your device settings.');
-        setLoading(false);
-        return;
-      }
-
-      // Request location permission
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setError('Location permission denied. Please enable location permissions in app settings.');
-        setLoading(false);
-        return;
-      }
-
-      // Get current location with timeout
-      const location = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.Balanced,
-        timeout: 10000, // 10 second timeout
-      });
+      let locationText = 'Demo Location (Austin, TX)';
       
-      const { latitude, longitude } = location.coords;
+      try {
+        // Check if location services are available
+        const isLocationEnabled = await Location.hasServicesEnabledAsync();
+        if (!isLocationEnabled) {
+          console.log('Location services disabled, using demo data');
+          // Continue with demo data
+        } else {
+          // Request location permission
+          const { status } = await Location.requestForegroundPermissionsAsync();
+          if (status !== 'granted') {
+            console.log('Location permission not granted, using demo data');
+            // Continue with demo data
+          } else {
+            // Get current location with timeout
+            const location = await Location.getCurrentPositionAsync({
+              accuracy: Location.Accuracy.Balanced,
+              timeout: 5000, // 5 second timeout
+            });
+            
+            const { latitude, longitude } = location.coords;
+            locationText = `Lat: ${latitude.toFixed(4)}, Lon: ${longitude.toFixed(4)}`;
+          }
+        }
+      } catch (locationError) {
+        console.log('Location error, using demo data:', locationError);
+        // Continue with demo data
+      }
 
       // For demo purposes, using mock data
       // In a real app, you would call Open-Meteo API or Weather.gov API
@@ -60,23 +66,26 @@ export default function WeatherScreen() {
         humidity: 65,
         pressure: 1013,
         condition: 'Partly Cloudy',
-        location: `Lat: ${latitude.toFixed(4)}, Lon: ${longitude.toFixed(4)}`,
+        location: locationText,
       };
 
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1000));
       setWeather(mockWeather);
     } catch (err: any) {
-      if (err.code === 'E_LOCATION_SERVICES_DISABLED') {
-        setError('Location services are disabled. Please enable location services in your device settings.');
-      } else if (err.code === 'E_LOCATION_TIMEOUT') {
-        setError('Location request timed out. Please check your network connection and try again.');
-      } else if (err.code === 'E_LOCATION_UNAVAILABLE') {
-        setError('Current location is unavailable. Make sure that location services are enabled.');
-      } else {
-        setError('Failed to fetch weather data. Please try again.');
-      }
       console.error('Weather fetch error:', err);
+      // Even if there's an error, show demo data
+      const demoWeather: WeatherData = {
+        temperature: 22.5,
+        windSpeed: 15.3,
+        precipitation: 0.2,
+        humidity: 65,
+        pressure: 1013,
+        condition: 'Partly Cloudy',
+        location: 'Demo Location (Austin, TX)',
+      };
+      setWeather(demoWeather);
+      setError(null); // Clear any error since we have demo data
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -107,7 +116,7 @@ export default function WeatherScreen() {
     );
   }
 
-  if (error) {
+  if (error && !weather) {
     return (
       <ThemedView style={styles.container}>
         <SafeAreaView style={styles.safeArea}>
@@ -148,11 +157,16 @@ export default function WeatherScreen() {
               🌤️ Current Weather
             </ThemedText>
             <ThemedText type="default" style={styles.location}>
-              {weather?.location}
+              {weather?.location || 'Loading location...'}
             </ThemedText>
+            {error && (
+              <ThemedText type="small" style={styles.demoNotice}>
+                ⚠️ Using demo data: {error}
+              </ThemedText>
+            )}
           </View>
 
-          {weather && (
+          {weather ? (
             <View style={styles.weatherContainer}>
               <ThemedView type="backgroundElement" style={styles.primaryCard}>
                 <ThemedText type="title" style={styles.temperature}>
@@ -191,6 +205,13 @@ export default function WeatherScreen() {
                   Moderate wind speeds with light precipitation. Good conditions for storm observation.
                 </ThemedText>
               </ThemedView>
+            </View>
+          ) : (
+            <View style={styles.centerContent}>
+              <ActivityIndicator size="large" />
+              <ThemedText type="default" style={styles.loadingText}>
+                Loading weather data...
+              </ThemedText>
             </View>
           )}
         </ScrollView>
@@ -254,6 +275,13 @@ const styles = StyleSheet.create({
   location: {
     textAlign: 'center',
     opacity: 0.7,
+  },
+  demoNotice: {
+    textAlign: 'center',
+    opacity: 0.6,
+    fontStyle: 'italic',
+    marginTop: Spacing.one,
+    fontSize: 12,
   },
   weatherContainer: {
     gap: Spacing.three,
