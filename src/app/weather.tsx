@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
-import { StyleSheet, View, ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import * as Location from 'expo-location';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import * as Location from 'expo-location';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface WeatherData {
   temperature: number;
@@ -33,13 +33,17 @@ export default function WeatherScreen() {
         // Check if location services are available
         const isLocationEnabled = await Location.hasServicesEnabledAsync();
         if (!isLocationEnabled) {
-          console.log('Location services disabled, using demo data');
+          if (__DEV__) {
+            console.log('Location services disabled, using demo data');
+          }
           // Continue with demo data
         } else {
           // Request location permission
           const { status } = await Location.requestForegroundPermissionsAsync();
           if (status !== 'granted') {
-            console.log('Location permission not granted, using demo data');
+            if (__DEV__) {
+              console.log('Location permission not granted, using demo data');
+            }
             // Continue with demo data
           } else {
             // Get current location
@@ -52,7 +56,10 @@ export default function WeatherScreen() {
           }
         }
       } catch (locationError) {
-        console.log('Location error, using demo data:', locationError);
+        // Only log detailed error in development
+        if (__DEV__) {
+          console.log('Location error, using demo data:', locationError);
+        }
         // Continue with demo data
       }
 
@@ -158,6 +165,13 @@ export default function WeatherScreen() {
             <ThemedText type="default" style={styles.location}>
               {weather?.location || 'Loading location...'}
             </ThemedText>
+            {weather?.location?.includes('Demo Location') && (
+              <ThemedView type="backgroundElement" style={styles.demoBadge}>
+                <ThemedText type="small" style={styles.demoBadgeText}>
+                  📍 Demo Data
+                </ThemedText>
+              </ThemedView>
+            )}
             {error && (
               <ThemedText type="small" style={styles.demoNotice}>
                 ⚠️ Using demo data: {error}
@@ -281,6 +295,16 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     marginTop: Spacing.one,
     fontSize: 12,
+  },
+  demoBadge: {
+    paddingHorizontal: Spacing.two,
+    paddingVertical: Spacing.one,
+    borderRadius: Spacing.two,
+    marginTop: Spacing.one,
+  },
+  demoBadgeText: {
+    fontSize: 12,
+    opacity: 0.8,
   },
   weatherContainer: {
     gap: Spacing.three,
