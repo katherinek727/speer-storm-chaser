@@ -60,9 +60,6 @@ export default function HomeScreen() {
                   <ThemedText type="subtitle" style={styles.featureTitle}>
                     Weather Data
                   </ThemedText>
-                  <ThemedText type="small" style={styles.featureSubtitle}>
-                    Tap to view →
-                  </ThemedText>
                 </View>
               </View>
               <ThemedText type="default" style={styles.featureDescription}>
@@ -85,9 +82,6 @@ export default function HomeScreen() {
                   <ThemedText type="subtitle" style={styles.featureTitle}>
                     Storm Documentation
                   </ThemedText>
-                  <ThemedText type="small" style={styles.featureSubtitle}>
-                    Tap to document →
-                  </ThemedText>
                 </View>
               </View>
               <ThemedText type="default" style={styles.featureDescription}>
@@ -109,9 +103,6 @@ export default function HomeScreen() {
                 <View style={styles.featureTextContainer}>
                   <ThemedText type="subtitle" style={styles.featureTitle}>
                     Data Persistence
-                  </ThemedText>
-                  <ThemedText type="small" style={styles.featureSubtitle}>
-                    Tap to view saved →
                   </ThemedText>
                 </View>
               </View>
@@ -158,8 +149,9 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.four,
   },
   appLogo: {
-    fontSize: 64,
+    fontSize: 100,
     marginBottom: Spacing.two,
+    transform: [{ translateY: 20 }]
   },
   appTitle: {
     textAlign: 'center',
