@@ -27,16 +27,28 @@ export default function WeatherScreen() {
       setLoading(true);
       setError(null);
 
-      // Request location permission
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setError('Location permission denied');
+      // Check if location services are available
+      const isLocationEnabled = await Location.hasServicesEnabledAsync();
+      if (!isLocationEnabled) {
+        setError('Location services are disabled. Please enable location services in your device settings.');
         setLoading(false);
         return;
       }
 
-      // Get current location
-      const location = await Location.getCurrentPositionAsync({});
+      // Request location permission
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setError('Location permission denied. Please enable location permissions in app settings.');
+        setLoading(false);
+        return;
+      }
+
+      // Get current location with timeout
+      const location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Balanced,
+        timeout: 10000, // 10 second timeout
+      });
+      
       const { latitude, longitude } = location.coords;
 
       // For demo purposes, using mock data
@@ -54,9 +66,17 @@ export default function WeatherScreen() {
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1000));
       setWeather(mockWeather);
-    } catch (err) {
-      setError('Failed to fetch weather data');
-      console.error(err);
+    } catch (err: any) {
+      if (err.code === 'E_LOCATION_SERVICES_DISABLED') {
+        setError('Location services are disabled. Please enable location services in your device settings.');
+      } else if (err.code === 'E_LOCATION_TIMEOUT') {
+        setError('Location request timed out. Please check your network connection and try again.');
+      } else if (err.code === 'E_LOCATION_UNAVAILABLE') {
+        setError('Current location is unavailable. Make sure that location services are enabled.');
+      } else {
+        setError('Failed to fetch weather data. Please try again.');
+      }
+      console.error('Weather fetch error:', err);
     } finally {
       setLoading(false);
       setRefreshing(false);

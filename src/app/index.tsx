@@ -7,15 +7,27 @@ import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 
 export default function HomeScreen() {
   const navigateToWeather = () => {
-    router.push('/weather');
+    try {
+      router.push('/weather');
+    } catch (error) {
+      console.error('Navigation error:', error);
+    }
   };
 
   const navigateToDocument = () => {
-    router.push('/document');
+    try {
+      router.push('/document');
+    } catch (error) {
+      console.error('Navigation error:', error);
+    }
   };
 
   const navigateToSaved = () => {
-    router.push('/saved');
+    try {
+      router.push('/saved');
+    } catch (error) {
+      console.error('Navigation error:', error);
+    }
   };
 
   return (
